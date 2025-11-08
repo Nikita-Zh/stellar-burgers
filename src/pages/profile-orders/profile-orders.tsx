@@ -8,18 +8,29 @@ import {
   selectUserOrders,
   selectUserOrdersLoading
 } from '../../services/slices/orders';
+import {
+  fetchIngredients,
+  selectIngredients
+} from '../../services/slices/ingredients';
 
 export const ProfileOrders: FC = () => {
   /** TODO: взять переменную из стора */
   const dispatch = useDispatch();
   const orders: TOrder[] = useSelector(selectUserOrders);
   const loading = useSelector(selectUserOrdersLoading);
+  const ingredients = useSelector(selectIngredients);
 
   useEffect(() => {
     dispatch(fetchUserOrders());
   }, [dispatch]);
 
-  if (loading) {
+  useEffect(() => {
+    if (!ingredients.length) {
+      dispatch(fetchIngredients());
+    }
+  }, [dispatch, ingredients.length]);
+
+  if (loading || !ingredients.length) {
     return <Preloader />;
   }
 

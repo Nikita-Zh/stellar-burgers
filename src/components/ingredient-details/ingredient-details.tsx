@@ -1,7 +1,7 @@
 import { FC, useEffect, useMemo } from 'react';
 import { Preloader } from '../ui/preloader';
 import { IngredientDetailsUI } from '../ui/ingredient-details';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from '../../services/store';
 import {
   fetchIngredients,
@@ -12,6 +12,7 @@ import {
 export const IngredientDetails: FC = () => {
   /** TODO: взять переменную из стора */
   const { id } = useParams();
+  const location = useLocation();
   const dispatch = useDispatch();
   const loading = useSelector(selectIngredientsLoading);
   const ingredients = useSelector(selectIngredients);
@@ -31,5 +32,19 @@ export const IngredientDetails: FC = () => {
     return <Preloader />;
   }
 
-  return <IngredientDetailsUI ingredientData={ingredientData} />;
+  const isModal = Boolean(location?.state?.background);
+
+  return (
+    <>
+      {!isModal && (
+        <h3
+          className='text text_type_main-large mt-10 mb-4'
+          style={{ textAlign: 'center' }}
+        >
+          Детали ингредиента
+        </h3>
+      )}
+      <IngredientDetailsUI ingredientData={ingredientData} />
+    </>
+  );
 };

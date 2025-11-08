@@ -22,15 +22,17 @@ import {
 } from '@pages';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { useDispatch } from '../../services/store';
+import { useDispatch, useSelector } from '../../services/store';
 import { fetchUser } from '../../services/slices/user';
 import { getCookie } from '../../utils/cookie';
+import { selectOrderInfo } from '../../services/slices/order-info';
 
 const App = () => {
   const location = useLocation();
   const background = (location.state as any)?.background;
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const currentOrder = useSelector(selectOrderInfo);
   const closeModal = () => navigate(-1);
 
   useEffect(() => {
@@ -115,7 +117,10 @@ const App = () => {
           <Route
             path='/feed/:number'
             element={
-              <Modal onClose={closeModal} title='Детали заказа'>
+              <Modal
+                onClose={closeModal}
+                title={`#${currentOrder?.number?.toString() || ''}`}
+              >
                 <OrderInfo />
               </Modal>
             }
@@ -132,7 +137,10 @@ const App = () => {
             path='/profile/orders/:number'
             element={
               <OnlyAuth>
-                <Modal onClose={closeModal} title='Детали заказа'>
+                <Modal
+                  onClose={closeModal}
+                  title={`#${currentOrder?.number?.toString() || ''}`}
+                >
                   <OrderInfo />
                 </Modal>
               </OnlyAuth>
